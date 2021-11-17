@@ -1,6 +1,6 @@
 import {
-  PromiseValueResolveHandler,
-  ThenableValueResolveHandler,
+  PromiseResolveValueHandler,
+  ThenableResolveValueHandler,
   DefaultResolveValueHandler,
 } from "./resolve_value_handler";
 
@@ -13,8 +13,8 @@ enum State {
 }
 
 const resolveValueHandlerChain = [
-  new PromiseValueResolveHandler(),
-  new ThenableValueResolveHandler(),
+  new PromiseResolveValueHandler(),
+  new ThenableResolveValueHandler(),
   new DefaultResolveValueHandler(),
 ];
 class DogePromise {

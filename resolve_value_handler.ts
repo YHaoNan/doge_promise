@@ -35,8 +35,8 @@ interface ResolveValueHandler {
    */
 }
 
-class PromiseValueResolveHandler implements ResolveValueHandler {
-  name = "PromiseValueResolveHandler";
+class PromiseResolveValueHandler implements ResolveValueHandler {
+  name = "PromiseResolveValueHandler";
   canResolve(resolveValue: any): boolean {
     return resolveValue instanceof DogePromise;
   }
@@ -54,8 +54,8 @@ class PromiseValueResolveHandler implements ResolveValueHandler {
   }
 }
 
-class ThenableValueResolveHandler implements ResolveValueHandler {
-  name = "ThenableValueResolveHandler";
+class ThenableResolveValueHandler implements ResolveValueHandler {
+  name = "ThenableResolveValueHandler";
   canResolve(resolveValue: any): boolean {
     return resolveValue != null && resolveValue != undefined;
   }
@@ -111,7 +111,7 @@ class DefaultResolveValueHandler implements ResolveValueHandler {
 
 export {
   ResolveValueHandler,
-  PromiseValueResolveHandler,
-  ThenableValueResolveHandler,
+  PromiseResolveValueHandler,
+  ThenableResolveValueHandler,
   DefaultResolveValueHandler,
 };
