@@ -4,6 +4,8 @@ import {
   DefaultResolveValueHandler,
 } from "./resolve_value_handler";
 
+import * as EH from "./enhance_method";
+
 enum State {
   PENDING = "pending",
   FULFILLED = "fulfilled",
@@ -134,6 +136,19 @@ class DogePromise {
       }
     });
     return p;
+  }
+
+  public static resolve(value: any): DogePromise {
+    return EH.resolve(value);
+  }
+  public static reject(reason: any): DogePromise {
+    return EH.reject(reason);
+  }
+  public static all(promises: DogePromise[]): DogePromise {
+    return EH.all(promises);
+  }
+  public static race(promises: DogePromise[]): DogePromise {
+    return EH.race(promises);
   }
 }
 
