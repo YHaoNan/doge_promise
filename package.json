@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "promises-aplus-tests": "^2.1.2"
+  },
+  "dependencies": {
+    "@tsconfig/node16": "^1.0.2"
+  }
+}
