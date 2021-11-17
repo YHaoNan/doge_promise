@@ -66,36 +66,34 @@ class ThenableValueResolveHandler implements ResolveValueHandler {
       method(arg);
       isThenableHasAnCalledCallback = true;
     }
-    // 如果是对象或函数
-    if (
-      typeof resolveValue === "object" ||
-      typeof resolveValue === "function"
-    ) {
-      let then;
-      try {
-        then = resolveValue.then;
-        // 如果是thenable
-        if (typeof then === "function") {
-          then.call(
-            resolveValue,
-            (y) => {
-              safeCallCallback(resolve, y);
-            },
-            (y) => {
-              safeCallCallback(reject, y);
-            }
-          );
-          return true;
-        } else {
-          return false;
-        }
-      } catch (e) {
-        // 如果访问then属性或调用then方法抛出异常
-        safeCallCallback(reject, e);
-        return true;
-      }
-    } else {
+
+    // 如果不是对象或函数
+    if (typeof resolveValue != "object" && typeof resolveValue != "function")
       return false;
+
+    // 尝试访问then属性
+    let then;
+    try {
+      then = resolveValue.then;
+      // 如果then属性不是一个方法，那么认为`resolveValue`不是一个thenable，放弃尝试
+      if (typeof then != "function") return false;
+
+      // 尝试调用then.call
+      then.call(
+        resolveValue,
+        (y) => {
+          safeCallCallback(resolve, y);
+        },
+        (y) => {
+          safeCallCallback(reject, y);
+        }
+      );
+      // 尝试成功
+      return true;
+    } catch (e) {
+      // 如果访问then属性或调用then方法抛出异常
+      safeCallCallback(reject, e);
+      return true;
     }
   }
 }
