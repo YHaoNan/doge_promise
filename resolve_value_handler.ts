@@ -40,7 +40,7 @@ class PromiseResolveValueHandler implements ResolveValueHandler {
   canResolve(resolveValue: any): boolean {
     return resolveValue instanceof DogePromise;
   }
-  tryToResolve(resolveValue, changeState, resolve, reject): boolean {
+  tryToResolve(resolveValue, _, resolve, reject): boolean {
     // 跟踪状态
     resolveValue.then(
       (value) => {
@@ -59,12 +59,12 @@ class ThenableResolveValueHandler implements ResolveValueHandler {
   canResolve(resolveValue: any): boolean {
     return resolveValue != null && resolveValue != undefined;
   }
-  tryToResolve(resolveValue: any, changeState, resolve, reject): boolean {
-    let isThenableHasAnCalledCallback = false;
-    function safeCallCallback(method, arg) {
-      if (isThenableHasAnCalledCallback) return;
+  tryToResolve(resolveValue, _, resolve, reject): boolean {
+    let isAlreadyResolved = false;
+    function safeCallResolveMethod(method, arg) {
+      if (isAlreadyResolved) return;
+      isAlreadyResolved = true;
       method(arg);
-      isThenableHasAnCalledCallback = true;
     }
 
     // 如果不是对象或函数
@@ -82,17 +82,17 @@ class ThenableResolveValueHandler implements ResolveValueHandler {
       then.call(
         resolveValue,
         (y) => {
-          safeCallCallback(resolve, y);
+          safeCallResolveMethod(resolve, y);
         },
         (y) => {
-          safeCallCallback(reject, y);
+          safeCallResolveMethod(reject, y);
         }
       );
       // 尝试成功
       return true;
     } catch (e) {
       // 如果访问then属性或调用then方法抛出异常
-      safeCallCallback(reject, e);
+      safeCallResolveMethod(reject, e);
       return true;
     }
   }
@@ -100,10 +100,10 @@ class ThenableResolveValueHandler implements ResolveValueHandler {
 
 class DefaultResolveValueHandler implements ResolveValueHandler {
   name = "DefaultResolveValueHandler";
-  canResolve(resolveValue: any): boolean {
+  canResolve(_: any): boolean {
     return true;
   }
-  tryToResolve(resolveValue: any, changeState, resolve, reject): boolean {
+  tryToResolve(resolveValue, changeState, resolve, reject): boolean {
     changeState(State.FULFILLED, resolveValue);
     return true;
   }
