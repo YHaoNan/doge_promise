@@ -150,6 +150,12 @@ class DogePromise {
   public static race(promises: DogePromise[]): DogePromise {
     return EH.race(promises);
   }
+  public static allSettled(promises: DogePromise[]): DogePromise {
+    return EH.allSettled(promises);
+  }
+  public static any(promises: DogePromise[]): DogePromise {
+    return EH.any(promises);
+  }
 }
 
 export { State, DogePromise };

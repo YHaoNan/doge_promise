@@ -61,4 +61,50 @@ function race(promises: DogePromise[]): DogePromise {
   });
 }
 
-export { resolve, reject, all, race };
+function allSettled(promises: DogePromise[]): DogePromise {
+  return new DogePromise((resolve, reject) => {
+    let result = [];
+    promises.forEach((p, i) => {
+      p.then(
+        (value) => {
+          result.push({
+            status: "fulfilled",
+            value,
+          });
+          if (i == promises.length - 1) resolve(result);
+        },
+        (reason) => {
+          result.push({
+            status: "rejected",
+            reason,
+          });
+          if (i == promises.length - 1) resolve(result);
+        }
+      );
+    });
+  });
+}
+
+function any(promises: DogePromise[]): DogePromise {
+  return new DogePromise((resolve, reject) => {
+    let rejectedReasons = [];
+    let rejectedCnt = 0;
+    promises.forEach((p, i) => {
+      setTimeout(() => {
+        p.then(
+          (value) => {
+            resolve(value);
+          },
+          (reason) => {
+            rejectedReasons[i] = reason;
+            rejectedCnt++;
+            if (rejectedCnt === promises.length) {
+              reject(rejectedReasons);
+            }
+          }
+        );
+      });
+    });
+  });
+}
+export { resolve, reject, all, race, allSettled, any };
