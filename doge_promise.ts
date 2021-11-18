@@ -138,6 +138,22 @@ class DogePromise {
     return p;
   }
 
+  public catch(onRejected: any): DogePromise {
+    return this.then(null, onRejected);
+  }
+  public finally(callback: any) {
+    return this.then(
+      (value) => {
+        if (typeof callback === "function") callback();
+        return value;
+      },
+      (reason) => {
+        if (typeof callback === "function") callback();
+        throw reason;
+      }
+    );
+  }
+
   public static resolve(value: any): DogePromise {
     return EH.resolve(value);
   }
